@@ -73,7 +73,6 @@ public class Codec{
 		D.addChild(J);
 		
 		F.addChild(K);
-		//
 		
 		System.out.println(serialize(tree.root));
 		System.out.println(tree.numberOfNodesInTree(tree.root));
