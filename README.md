@@ -1,2 +1,2 @@
-# Serialize-and-deserialize-n-ary-tree
+# Serialize-and-deserialize-binary-tree
 Java solution of Serialize and deserialize binary tree
