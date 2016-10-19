@@ -1,82 +1,60 @@
-import java.util.ArrayList;
-
-public class Codec{
-
-	public static String serialize(Node root){
-		StringBuilder str = new StringBuilder();
-		serialize_helper(root, str);
-		return str.toString();
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+ 
+ /**
+  * 1. Print the tree in pre-order traversal and use "#" to denote null node and split node with ",". 
+  * 2. We can use a StringBuilder for building the string on the fly. 
+  * 3. For deserializing, we use a String array to store the pre-order traversal and since we have "#" as null node, 
+  * 4. we know exactly how to where to end building subtress.
+  */
+public class Codec {
+	public String serialize(TreeNode root){
+        StringBuilder str = new StringBuilder();
+        serialize_helper(root, str);
+        return str.toString();
 	}
 	
-	public static void serialize_helper(Node root, StringBuilder str){
-		if(root == null) return ;
-		str.append(root.val + ",");
-		for(int i = 0; i < root.children.size(); i++){
-			if(root.children.get(i) != null){
-				serialize_helper(root.children.get(i), str);
-			}
+	public void serialize_helper(TreeNode root, StringBuilder str){
+		if(root == null){
+			str.append("#,");
+			return;
 		}
-		str.append("#,");
+		str.append(root.val+",");
+		serialize_helper(root.left, str);
+		serialize_helper(root.right, str);
+		return;
 	}
 	
-	static int count = 0;
-	public static Node deserialize(String data, int kArity){
-		String[] list = data.split(",");
-		return deserialize_helper(list, kArity);
-	}	
+	
+	int count = 0;
 
-	public static Node deserialize_helper(String[] list, int kArity){		
+	public TreeNode deserialize(String data){
+	    if(data == "") return null;
+		String[] list = data.split(",");
+        return deserialize_helper(list);
+	}
+	
+	public TreeNode deserialize_helper(String[] list){
 		if(count >= list.length || list[count].equals("#")){
 		    count++;
 		    return null;
 		}
-		Node curr = new Node(Integer.parseInt(list[count]));
+		TreeNode curr = new TreeNode(Integer.parseInt(list[count]));
 		count++;
-		for(int i = 0; i < kArity; i++){
-			Node temp = deserialize_helper(list, kArity);
-			if( temp!= null) {
-				curr.addChild(temp);
-			}
-			else{
-				break;
-			}
-		}
+		curr.left = deserialize_helper(list);
+		curr.right = deserialize_helper(list);
+		
 		return curr;
 	}
-
-	public static void main(String[] args) {
-		naryTree tree = new naryTree(4);
-	
-		Node B = new Node(2);
-		Node C = new Node(3);
-		Node D = new Node(4);
-		Node E = new Node(5);
-		Node F = new Node(6);
-		Node G = new Node(7);
-		Node H = new Node(8);
-		Node I = new Node(9);		
-		Node J = new Node(10);
-		Node K = new Node(11);
-	
-		tree.addRoot(1);
-		
-		tree.root.addChild(B);
-		tree.root.addChild(C);
-		tree.root.addChild(D);
-		
-		B.addChild(E);
-		B.addChild(F);
-		
-		D.addChild(G);
-		D.addChild(H);
-		D.addChild(I);
-		D.addChild(J);
-		
-		F.addChild(K);
-		
-		System.out.println(serialize(tree.root));
-		System.out.println(tree.numberOfNodesInTree(tree.root));
-		System.out.println(serialize(deserialize(serialize(tree.root), tree.root.maxNumOfChildren)));
-	}
-
 }
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
